@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -5,23 +6,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fiche de Résultats</title>
 <style>
-  /* ── Page & Print Setup ──────────────────────────── */
   @page {
     size: A4;
-    margin: 2cm 2.5cm;
+    margin: 1.8cm 2cm;
   }
   @media print {
-    body { margin: 0; }
+    body { margin: 0; background: white; }
     .no-print { display: none; }
-    .page { box-shadow: none; }
+    .page { box-shadow: none; margin: 0; }
   }
 
-  /* ── Base ─────────────────────────────────────────── */
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
     font-family: "Segoe UI", Arial, sans-serif;
-    font-size: 14pt;
+    font-size: 10pt;
     background: #f0f0f0;
     display: flex;
     flex-direction: column;
@@ -29,20 +28,19 @@
     padding: 20px;
   }
 
-  /* ── Page A4 ──────────────────────────────────────── */
   .page {
     background: white;
     width: 210mm;
     min-height: 297mm;
-    padding: 2cm 2.5cm;
+    padding: 1.8cm 2cm;
     box-shadow: 0 4px 20px rgba(0,0,0,0.15);
     margin-bottom: 20px;
   }
 
-  /* ── Header ───────────────────────────────────────── */
+  /* Titre principal */
   .header {
     text-align: center;
-    font-size: 14pt;
+    font-size: 13pt;
     font-weight: bold;
     margin-bottom: 4pt;
     letter-spacing: 0.5px;
@@ -50,130 +48,122 @@
 
   hr.divider {
     border: none;
-    border-top: 2px solid black;
-    margin: 6pt 0;
+    border-top: 1.5px solid black;
+    margin: 5pt 0;
   }
 
-  /* ── Section Title ────────────────────────────────── */
+  /* Titre de section (👤 📋 🔬 🧠 🎯) */
   .section-title {
-    font-size: 14pt;
+    font-size: 11pt;
     font-weight: bold;
-    line-height: 1.5;
-    margin-top: 10pt;
+    line-height: 1.4;
+    margin-top: 6pt;
     margin-bottom: 2pt;
   }
 
-  /* ── Info Row (Nom, Age...) ───────────────────────── */
+  /* Nom, Age, Ecole, Classe */
   .info-row {
-    font-size: 12pt;
-    font-weight: bold;
+    font-size: 10pt;
     line-height: 1.4;
-    margin: 0;
-    padding: 0;
   }
 
-  /* ── Field Label (bold) + Value (normal) ─────────── */
+  /* Label gras (Tes caractéristiques sont :) */
   .field-label {
     font-weight: bold;
-    font-size: 14pt;
+    font-size: 10pt;
+    margin-top: 4pt;
+    display: block;
   }
 
-  /* ── List Items (bullet list) ────────────────────── */
+  /* Liste à puces */
   .item-list {
     list-style: none;
-    padding-left: 18pt;
-    margin: 0;
+    padding-left: 14pt;
+    margin: 1pt 0 3pt 0;
   }
   .item-list li {
-    font-size: 14pt;
+    font-size: 10pt;
     font-weight: normal;
-    line-height: 1.5;
+    line-height: 1.4;
     position: relative;
   }
   .item-list li::before {
     content: "•";
     position: absolute;
-    left: -14pt;
+    left: -12pt;
     color: #333;
   }
 
-  /* ── RIASEC / Intelligence results ───────────────── */
+  /* Résultats RIASEC / Intel */
   .result-line {
-    font-size: 14pt;
+    font-size: 10pt;
     font-weight: normal;
-    line-height: 1.5;
+    line-height: 1.4;
     padding-left: 4pt;
   }
 
-  /* ── Choix pro ────────────────────────────────────── */
+  /* Choix professionnel */
   .choix-text {
-    font-size: 14pt;
-    font-weight: normal;
-    line-height: 1.5;
+    font-size: 10pt;
+    line-height: 1.4;
     padding-left: 4pt;
   }
+  .choix-text div {
+    margin-bottom: 1pt;
+  }
 
-  /* ── Print button ─────────────────────────────────── */
+  /* Bouton imprimer */
   .print-btn {
     background: #1A3557;
     color: white;
     border: none;
-    padding: 12px 32px;
-    font-size: 14pt;
+    padding: 10px 28px;
+    font-size: 11pt;
     border-radius: 6px;
     cursor: pointer;
-    margin: 16px 0;
+    margin: 14px 0;
     font-family: Arial, sans-serif;
   }
   .print-btn:hover { background: #2c5282; }
 
-  /* ── Spacing utility ──────────────────────────────── */
-  .spacer { height: 6pt; display: block; }
+  .spacer { height: 4pt; display: block; }
 </style>
 </head>
 <body>
 
-<!-- Print Button -->
 <div class="no-print">
   <button class="print-btn" onclick="window.print()">🖨️ Imprimer / Enregistrer en PDF</button>
 </div>
 
 <div class="page">
 
-  <!-- TITRE -->
   <div class="header">🎓 FICHE DE RESULTATS D'ORIENTATION</div>
   <hr class="divider">
 
-  <!-- INFORMATIONS PERSONNELLES -->
   <div class="section-title">👤 Informations personnelles</div>
-  <p class="info-row"><span class="field-label">Nom</span> : <span id="nom">—</span></p>
-  <p class="info-row"><span class="field-label">Age</span> : <span id="age">—</span> ans</p>
-  <p class="info-row"><span class="field-label">Ecole</span> : <span id="ecole">—</span></p>
-  <p class="info-row"><span class="field-label">Classe</span> : <span id="classe">—</span></p>
+  <p class="info-row"><strong>Nom</strong> : <span id="nom">—</span></p>
+  <p class="info-row"><strong>Age</strong> : <span id="age">—</span> ans</p>
+  <p class="info-row"><strong>Ecole</strong> : <span id="ecole">—</span></p>
+  <p class="info-row"><strong>Classe</strong> : <span id="classe">—</span></p>
 
   <hr class="divider">
 
-  <!-- MON PORTFOLIO -->
   <div class="section-title">📋 Mon Portfolio</div>
 
-  <div class="field-label">Tes caractéristiques sont :</div>
+  <span class="field-label">Tes caractéristiques sont :</span>
   <ul class="item-list" id="list-car"></ul>
-  <span class="spacer"></span>
 
-  <div class="field-label">Tes centres d'intérêts sont :</div>
+  <span class="field-label">Tes centres d'intérêts sont :</span>
   <ul class="item-list" id="list-int"></ul>
-  <span class="spacer"></span>
 
-  <div class="field-label">Tes compétences sont :</div>
+  <span class="field-label">Tes compétences sont :</span>
   <ul class="item-list" id="list-comp"></ul>
-  <span class="spacer"></span>
 
-  <div class="field-label">Tes valeurs sont :</div>
+  <span class="field-label">Tes valeurs sont :</span>
   <ul class="item-list" id="list-val"></ul>
 
   <hr class="divider">
 
-  <!-- RIASEC -->
   <div class="section-title">🔬 Mon profil RIASEC (Top 3)</div>
   <div class="result-line" id="riasec-1"></div>
   <div class="result-line" id="riasec-2"></div>
@@ -181,7 +171,6 @@
 
   <hr class="divider">
 
-  <!-- INTELLIGENCES -->
   <div class="section-title">🧠 Mes intelligences dominantes (Top 3)</div>
   <div class="result-line" id="intel-1"></div>
   <div class="result-line" id="intel-2"></div>
@@ -189,62 +178,45 @@
 
   <hr class="divider">
 
-  <!-- CHOIX PROFESSIONNEL -->
   <div class="section-title">🎯 Choix professionnel</div>
   <div class="choix-text" id="choix-pro"></div>
 
 </div>
 
-<!-- Print button bottom -->
 <div class="no-print">
   <button class="print-btn" onclick="window.print()">🖨️ Imprimer / Enregistrer en PDF</button>
 </div>
 
 <script>
-// ── Read URL parameters ────────────────────────────────────────────────────
 function getParam(name) {
-  const url = new URLSearchParams(window.location.search);
-  return decodeURIComponent(url.get(name) || '');
+  return decodeURIComponent(new URLSearchParams(window.location.search).get(name) || '');
 }
 
-// ── Fill list from comma-separated string ──────────────────────────────────
 function fillList(ulId, csvString) {
   const ul = document.getElementById(ulId);
   const items = csvString.split(',').map(s => s.trim()).filter(s => s.length > 0);
-  if (items.length === 0) {
-    ul.innerHTML = '<li style="color:#999">—</li>';
-    return;
-  }
-  ul.innerHTML = items.map(item => `<li>${item}</li>`).join('');
+  ul.innerHTML = items.length
+    ? items.map(item => `<li>${item}</li>`).join('')
+    : '<li style="color:#999">—</li>';
 }
 
-// ── Fill RIASEC / Intel top3 from "🥇 X 🥈 Y 🥉 Z" format ─────────────────
 function fillTop3(prefix, raw) {
-  if (!raw) {
-    document.getElementById(prefix+'-1').textContent = '—';
-    return;
-  }
-  // Format: "🥇 Réaliste  🥈 Social  🥉 Artistique"
-  const medal1 = raw.match(/🥇\s*([^🥈🥉]+)/);
-  const medal2 = raw.match(/🥈\s*([^🥈🥉]+)/);
-  const medal3 = raw.match(/🥉\s*(.+)/);
-
-  document.getElementById(prefix+'-1').textContent = medal1 ? '🥇 ' + medal1[1].trim() : '';
-  document.getElementById(prefix+'-2').textContent = medal2 ? '🥈 ' + medal2[1].trim() : '';
-  document.getElementById(prefix+'-3').textContent = medal3 ? '🥉 ' + medal3[1].trim() : '';
+  if (!raw) { document.getElementById(prefix+'-1').textContent = '—'; return; }
+  const m1 = raw.match(/🥇\s*([^🥈🥉]+)/);
+  const m2 = raw.match(/🥈\s*([^🥈🥉]+)/);
+  const m3 = raw.match(/🥉\s*(.+)/);
+  document.getElementById(prefix+'-1').textContent = m1 ? '🥇 ' + m1[1].trim() : '';
+  document.getElementById(prefix+'-2').textContent = m2 ? '🥈 ' + m2[1].trim() : '';
+  document.getElementById(prefix+'-3').textContent = m3 ? '🥉 ' + m3[1].trim() : '';
 }
 
-// ── Fill choix professionnel ───────────────────────────────────────────────
 function fillChoix(raw) {
   const el = document.getElementById('choix-pro');
   if (!raw) { el.textContent = '—'; return; }
-  // Format: "Oui | Metier: X | Matieres: Y | ..."
-  // OR: "Non | Raison: X"
-  const parts = raw.split('|').map(s => s.trim()).filter(Boolean);
-  el.innerHTML = parts.map(p => `<div>${p}</div>`).join('');
+  el.innerHTML = raw.split('|').map(s => s.trim()).filter(Boolean)
+    .map(p => `<div>${p}</div>`).join('');
 }
 
-// ── Populate from URL params ───────────────────────────────────────────────
 document.getElementById('nom').textContent    = getParam('nom')    || '—';
 document.getElementById('age').textContent    = getParam('age')    || '—';
 document.getElementById('ecole').textContent  = getParam('ecole')  || '—';
@@ -254,12 +226,11 @@ fillList('list-car',  getParam('car'));
 fillList('list-int',  getParam('int'));
 fillList('list-comp', getParam('comp'));
 fillList('list-val',  getParam('val'));
-
 fillTop3('riasec', getParam('riasec'));
 fillTop3('intel',  getParam('intel'));
 fillChoix(getParam('choix'));
 
-// ── Demo data if no params ─────────────────────────────────────────────────
+// Données de démonstration si pas de paramètres
 if (!window.location.search) {
   document.getElementById('nom').textContent    = 'Eliane Khoury';
   document.getElementById('age').textContent    = '15';
@@ -271,7 +242,7 @@ if (!window.location.search) {
   fillList('list-val',  'Respect, Créativité, Liberté du temps');
   fillTop3('riasec', '🥇 Artistique  🥈 Réaliste  🥉 Investigateur');
   fillTop3('intel',  '🥇 Linguistique  🥈 Musicale  🥉 Spatiale');
-  fillChoix('Oui | Metier : médecine | Matieres utiles : bio, chimie | Connait quelquun: Oui | Peut aider: Oui');
+  fillChoix('Oui | Metier : médecine | Matieres : bio, chimie | Connait quelquun: Oui | Peut aider: Oui');
 }
 </script>
 </body>
