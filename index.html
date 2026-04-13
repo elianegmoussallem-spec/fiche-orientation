@@ -6,18 +6,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fiche de Résultats</title>
 <style>
-  @page {
-    size: A4;
-    margin: 1.8cm 2cm;
-  }
+  @page { size: A4; margin: 1.8cm 2cm; }
   @media print {
     body { margin: 0; background: white; }
     .no-print { display: none; }
     .page { box-shadow: none; margin: 0; }
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   body {
     font-family: "Segoe UI", Arial, sans-serif;
     font-size: 10pt;
@@ -27,7 +22,6 @@
     align-items: center;
     padding: 20px;
   }
-
   .page {
     background: white;
     width: 210mm;
@@ -36,8 +30,6 @@
     box-shadow: 0 4px 20px rgba(0,0,0,0.15);
     margin-bottom: 20px;
   }
-
-  /* Titre principal */
   .header {
     text-align: center;
     font-size: 13pt;
@@ -45,14 +37,11 @@
     margin-bottom: 4pt;
     letter-spacing: 0.5px;
   }
-
   hr.divider {
     border: none;
     border-top: 1.5px solid black;
     margin: 5pt 0;
   }
-
-  /* Titre de section (👤 📋 🔬 🧠 🎯) */
   .section-title {
     font-size: 11pt;
     font-weight: bold;
@@ -60,22 +49,13 @@
     margin-top: 6pt;
     margin-bottom: 2pt;
   }
-
-  /* Nom, Age, Ecole, Classe */
-  .info-row {
-    font-size: 10pt;
-    line-height: 1.4;
-  }
-
-  /* Label gras (Tes caractéristiques sont :) */
+  .info-row { font-size: 10pt; line-height: 1.4; }
   .field-label {
     font-weight: bold;
     font-size: 10pt;
     margin-top: 4pt;
     display: block;
   }
-
-  /* Liste à puces */
   .item-list {
     list-style: none;
     padding-left: 14pt;
@@ -93,26 +73,14 @@
     left: -12pt;
     color: #333;
   }
-
-  /* Résultats RIASEC / Intel */
   .result-line {
     font-size: 10pt;
     font-weight: normal;
     line-height: 1.4;
     padding-left: 4pt;
   }
-
-  /* Choix professionnel */
-  .choix-text {
-    font-size: 10pt;
-    line-height: 1.4;
-    padding-left: 4pt;
-  }
-  .choix-text div {
-    margin-bottom: 1pt;
-  }
-
-  /* Bouton imprimer */
+  .choix-text { font-size: 10pt; line-height: 1.4; padding-left: 4pt; }
+  .choix-text div { margin-bottom: 1pt; }
   .print-btn {
     background: #1A3557;
     color: white;
@@ -121,129 +89,395 @@
     font-size: 11pt;
     border-radius: 6px;
     cursor: pointer;
-    margin: 14px 0;
+    margin: 14px 6px;
     font-family: Arial, sans-serif;
   }
   .print-btn:hover { background: #2c5282; }
-
   .spacer { height: 4pt; display: block; }
+
+  /* ── Lang bar ── */
+  .lang-bar {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 10px 0;
+  }
+  .lang-btn {
+    padding: 6px 18px;
+    border: 1.5px solid #aaa;
+    border-radius: 20px;
+    background: #fff;
+    color: #444;
+    cursor: pointer;
+    font-size: 12pt;
+    font-family: Arial, sans-serif;
+    transition: all .15s;
+  }
+  .lang-btn.active {
+    background: #1A3557;
+    color: #fff;
+    border-color: #1A3557;
+  }
+
+  /* RTL support */
+  .page[dir="rtl"] .item-list { padding-left: 0; padding-right: 14pt; }
+  .page[dir="rtl"] .item-list li::before { left: auto; right: -12pt; }
+  .page[dir="rtl"] .result-line,
+  .page[dir="rtl"] .choix-text { padding-left: 0; padding-right: 4pt; }
+  .page[dir="rtl"] .info-row,
+  .page[dir="rtl"] .section-title,
+  .page[dir="rtl"] .field-label,
+  .page[dir="rtl"] .header { text-align: right; }
 </style>
 </head>
 <body>
 
 <div class="no-print">
-  <button class="print-btn" onclick="window.print()">🖨️ Imprimer / Enregistrer en PDF</button>
+  <div class="lang-bar">
+    <button class="lang-btn" id="btn-ar" onclick="setLang('ar')">🇱🇧 عربي</button>
+    <button class="lang-btn active" id="btn-fr" onclick="setLang('fr')">🇫🇷 Français</button>
+    <button class="lang-btn" id="btn-en" onclick="setLang('en')">🇬🇧 English</button>
+  </div>
+  <button class="print-btn" onclick="window.print()">🖨️ <span id="btn-print-label">Imprimer / Enregistrer en PDF</span></button>
 </div>
 
-<div class="page">
+<div class="page" id="page">
 
-  <div class="header">🎓 FICHE DE RESULTATS D'ORIENTATION</div>
+  <div class="header" id="main-title">🎓 FICHE DE RESULTATS D'ORIENTATION</div>
   <hr class="divider">
 
-  <div class="section-title">👤 Informations personnelles</div>
-  <p class="info-row"><strong>Nom</strong> : <span id="nom">—</span></p>
-  <p class="info-row"><strong>Age</strong> : <span id="age">—</span> ans</p>
-  <p class="info-row"><strong>Ecole</strong> : <span id="ecole">—</span></p>
-  <p class="info-row"><strong>Classe</strong> : <span id="classe">—</span></p>
+  <div class="section-title" id="t-info">👤 Informations personnelles</div>
+  <p class="info-row"><strong id="t-nom-label">Nom</strong> : <span id="nom">—</span></p>
+  <p class="info-row"><strong id="t-age-label">Âge</strong> : <span id="age">—</span> <span id="t-ans">ans</span></p>
+  <p class="info-row"><strong id="t-ecole-label">École</strong> : <span id="ecole">—</span></p>
+  <p class="info-row"><strong id="t-classe-label">Classe</strong> : <span id="classe">—</span></p>
 
   <hr class="divider">
 
-  <div class="section-title">📋 Mon Portfolio</div>
+  <div class="section-title" id="t-portfolio">📋 Mon Portfolio</div>
 
-  <span class="field-label">Tes caractéristiques sont :</span>
+  <span class="field-label" id="t-car-label">Tes caractéristiques sont :</span>
   <ul class="item-list" id="list-car"></ul>
 
-  <span class="field-label">Tes centres d'intérêts sont :</span>
+  <span class="field-label" id="t-int-label">Tes centres d'intérêts sont :</span>
   <ul class="item-list" id="list-int"></ul>
 
-  <span class="field-label">Tes compétences sont :</span>
+  <span class="field-label" id="t-comp-label">Tes compétences sont :</span>
   <ul class="item-list" id="list-comp"></ul>
 
-  <span class="field-label">Tes valeurs sont :</span>
+  <span class="field-label" id="t-val-label">Tes valeurs sont :</span>
   <ul class="item-list" id="list-val"></ul>
 
   <hr class="divider">
 
-  <div class="section-title">🔬 Mon profil RIASEC (Top 3)</div>
+  <div class="section-title" id="t-riasec-title">🔬 Mon profil RIASEC (Top 3)</div>
   <div class="result-line" id="riasec-1"></div>
   <div class="result-line" id="riasec-2"></div>
   <div class="result-line" id="riasec-3"></div>
 
   <hr class="divider">
 
-  <div class="section-title">🧠 Mes intelligences dominantes (Top 3)</div>
+  <div class="section-title" id="t-intel-title">🧠 Mes intelligences dominantes (Top 3)</div>
   <div class="result-line" id="intel-1"></div>
   <div class="result-line" id="intel-2"></div>
   <div class="result-line" id="intel-3"></div>
 
   <hr class="divider">
 
-  <div class="section-title">🎯 Choix professionnel</div>
+  <div class="section-title" id="t-pro-title">🎯 Choix professionnel</div>
   <div class="choix-text" id="choix-pro"></div>
 
 </div>
 
 <div class="no-print">
-  <button class="print-btn" onclick="window.print()">🖨️ Imprimer / Enregistrer en PDF</button>
+  <button class="print-btn" onclick="window.print()">🖨️ <span class="print-label">Imprimer / Enregistrer en PDF</span></button>
 </div>
 
 <script>
+// ─── UI translations ───────────────────────────────────────────────────────
+const UI = {
+  fr: {
+    dir: 'ltr', htmlLang: 'fr',
+    mainTitle:   '🎓 FICHE DE RÉSULTATS D\'ORIENTATION',
+    tInfo:       '👤 Informations personnelles',
+    tNom:        'Nom', tAge: 'Âge', tAns: 'ans', tEcole: 'École', tClasse: 'Classe',
+    tPortfolio:  '📋 Mon Portfolio',
+    tCar:        'Tes caractéristiques sont :',
+    tInt:        "Tes centres d'intérêts sont :",
+    tComp:       'Tes compétences sont :',
+    tVal:        'Tes valeurs sont :',
+    tRiasec:     '🔬 Mon profil RIASEC (Top 3)',
+    tIntel:      '🧠 Mes intelligences dominantes (Top 3)',
+    tPro:        '🎯 Choix professionnel',
+    tPrint:      'Imprimer / Enregistrer en PDF',
+    proHas:      'Choix professionnel', proJob: 'Métier', proSubjects: 'Matières',
+    proKnows:    'Connaît quelqu\'un dans ce domaine', proHelp: 'Peut aider',
+    yes: 'Oui', no: 'Non'
+  },
+  ar: {
+    dir: 'rtl', htmlLang: 'ar',
+    mainTitle:   '🎓 بطاقة نتائج التوجيه المهني',
+    tInfo:       '👤 المعلومات الشخصية',
+    tNom:        'الاسم', tAge: 'العمر', tAns: 'سنة', tEcole: 'المدرسة', tClasse: 'الصف',
+    tPortfolio:  '📋 ملفي الشخصي',
+    tCar:        'خصائصي الشخصية :',
+    tInt:        'اهتماماتي :',
+    tComp:       'مهاراتي :',
+    tVal:        'قيمي :',
+    tRiasec:     '🔬 نموذج RIASEC (أعلى 3)',
+    tIntel:      '🧠 أنواع ذكائي الغالب (أعلى 3)',
+    tPro:        '🎯 الاختيار المهني',
+    tPrint:      'طباعة / حفظ كـ PDF',
+    proHas:      'لديه اختيار مهني', proJob: 'المهنة', proSubjects: 'المواد',
+    proKnows:    'يعرف شخصًا في هذا المجال', proHelp: 'يمكنه المساعدة',
+    yes: 'نعم', no: 'لا'
+  },
+  en: {
+    dir: 'ltr', htmlLang: 'en',
+    mainTitle:   '🎓 CAREER GUIDANCE RESULTS',
+    tInfo:       '👤 Personal Information',
+    tNom:        'Name', tAge: 'Age', tAns: 'years old', tEcole: 'School', tClasse: 'Class',
+    tPortfolio:  '📋 My Portfolio',
+    tCar:        'My characteristics:',
+    tInt:        'My interests:',
+    tComp:       'My skills:',
+    tVal:        'My values:',
+    tRiasec:     '🔬 My RIASEC Profile (Top 3)',
+    tIntel:      '🧠 My Dominant Intelligence Types (Top 3)',
+    tPro:        '🎯 Professional Choice',
+    tPrint:      'Print / Save as PDF',
+    proHas:      'Professional choice', proJob: 'Career', proSubjects: 'Subjects',
+    proKnows:    'Knows someone in this field', proHelp: 'Can help',
+    yes: 'Yes', no: 'No'
+  }
+};
+
+// ─── Choice translations FR → AR / EN ─────────────────────────────────────
+const CHOICE_AR = {
+  'Ambitieux(se)':'طموح/ة','Créatif(ve)':'مبدع/ة','Organisé(e)':'منظّم/ة',
+  'Persévérant(e)':'مثابر/ة','Sociable':'اجتماعي/ة','Responsable':'مسؤول/ة',
+  'Indépendant(e)':'مستقل/ة','Calme':'هادئ/ة','Empathique':'متعاطف/ة',
+  'Attentif(ve)':'منتبه/ة','Honnête':'صادق/ة','Curieux':'فضولي/ة',
+  'Méticuleux':'دقيق/ة','Coopérant':'متعاون/ة','Timide':'خجول/ة','Autres':'أخرى',
+  'Sciences et recherche':'العلوم والبحث','Technologie et informatique':'التكنولوجيا والمعلوماتية',
+  'Santé et aide aux personnes':'الصحة ومساعدة الناس','Arts et création':'الفنون والإبداع',
+  'Commerce et entrepreneuriat':'التجارة وريادة الأعمال','Nature et environnement':'الطبيعة والبيئة',
+  'Communication et médias':'التواصل والإعلام','Gestion et organisation':'الإدارة والتنظيم',
+  'Travail manuel (avec les mains)':'العمل اليدوي','Éducation et formation':'التعليم والتكوين',
+  'Activités culinaires':'الأنشطة الطهوية',
+  'Théâtre':'المسرح','Théatre':'المسرح','Sport':'الرياضة','Cuisiner':'الطبخ','cuisiner':'الطبخ',
+  'Résolution de problèmes':'حل المشكلات','Jeux de société':'ألعاب الطاولة',
+  'Créativité':'الإبداع','Organisation':'التنظيم','Jeux stratégiques':'الألعاب الاستراتيجية',
+  'Compétences numériques':'المهارات الرقمية','Langue étrangère':'اللغة الأجنبية',
+  'Jeux de construction':'ألعاب البناء','Robotiques':'الروبوتيك','Dessin':'الرسم',
+  'Respect':'الاحترام','Indépendance':'الاستقلالية','Aider les autres':'مساعدة الآخرين',
+  'Prestige':'المكانة','Sécurité financière':'الأمن المالي','Liberté du temps':'حرية الوقت',
+  'Travail en équipe':'العمل الجماعي','Défi intellectuel':'التحدي الفكري',
+  'Impact social':'الأثر الاجتماعي','Aventure':'المغامرة',
+  'Réaliste':'واقعي','Investigateur':'باحث','Artistique':'فني/مبدع',
+  'Social':'اجتماعي','Entrepreneurial':'ريادي','Conventionnel':'تقليدي',
+  'Linguistique':'لغوي','Logico-mathématique':'منطقي-رياضي','Spatiale':'مكاني',
+  'Musicale':'موسيقي','Kinesthésique':'جسدي-حركي','Interpersonnelle':'تواصلي',
+  'Intrapersonnelle':'ذاتي','Naturaliste':'طبيعي',
+  'Oui':'نعم','Non':'لا'
+};
+
+const CHOICE_EN = {
+  'Ambitieux(se)':'Ambitious','Créatif(ve)':'Creative','Organisé(e)':'Organized',
+  'Persévérant(e)':'Persevering','Sociable':'Sociable','Responsable':'Responsible',
+  'Indépendant(e)':'Independent','Calme':'Calm','Empathique':'Empathetic',
+  'Attentif(ve)':'Attentive','Honnête':'Honest','Curieux':'Curious',
+  'Méticuleux':'Meticulous','Coopérant':'Cooperative','Timide':'Shy','Autres':'Other',
+  'Sciences et recherche':'Sciences and Research','Technologie et informatique':'Technology and Computing',
+  'Santé et aide aux personnes':'Health and Helping People','Arts et création':'Arts and Creation',
+  'Commerce et entrepreneuriat':'Business and Entrepreneurship','Nature et environnement':'Nature and Environment',
+  'Communication et médias':'Communication and Media','Gestion et organisation':'Management and Organization',
+  'Travail manuel (avec les mains)':'Manual Work','Éducation et formation':'Education and Training',
+  'Activités culinaires':'Culinary Activities',
+  'Théâtre':'Theater','Théatre':'Theater','Sport':'Sport','Cuisiner':'Cooking','cuisiner':'Cooking',
+  'Résolution de problèmes':'Problem Solving','Jeux de société':'Board Games',
+  'Créativité':'Creativity','Organisation':'Organization','Jeux stratégiques':'Strategy Games',
+  'Compétences numériques':'Digital Skills','Langue étrangère':'Foreign Language',
+  'Jeux de construction':'Construction Games','Robotiques':'Robotics','Dessin':'Drawing',
+  'Respect':'Respect','Indépendance':'Independence','Aider les autres':'Helping Others',
+  'Prestige':'Prestige','Sécurité financière':'Financial Security','Liberté du temps':'Time Freedom',
+  'Travail en équipe':'Teamwork','Défi intellectuel':'Intellectual Challenge',
+  'Impact social':'Social Impact','Aventure':'Adventure',
+  'Réaliste':'Realistic','Investigateur':'Investigative','Artistique':'Artistic',
+  'Social':'Social','Entrepreneurial':'Entrepreneurial','Conventionnel':'Conventional',
+  'Linguistique':'Linguistic','Logico-mathématique':'Logico-Mathematical','Spatiale':'Spatial',
+  'Musicale':'Musical','Kinesthésique':'Kinesthetic','Interpersonnelle':'Interpersonal',
+  'Intrapersonnelle':'Intrapersonal','Naturaliste':'Naturalist',
+  'Oui':'Yes','Non':'No'
+};
+
+// ─── URL params ────────────────────────────────────────────────────────────
 function getParam(name) {
-  return decodeURIComponent(new URLSearchParams(window.location.search).get(name) || '');
+  const aliases = {
+    nom:    ['الإسم','nom','name'],
+    age:    ['العمر','age'],
+    ecole:  ['ecole','school','مدرسة'],
+    classe: ['الصف','classe','class'],
+    car:    ['صفاتي','car','chars'],
+    int:    ['إهتماماتي','int','interests'],
+    comp:   ['مهاراتي','comp','skills'],
+    val:    ['قيمي','val','values'],
+    riasec: ['إختبارriasec','riasec'],
+    intel:  ['إختبارintel','intel'],
+    choix:  ['مهنتي','choix','pro']
+  };
+  const p = new URLSearchParams(window.location.search);
+  const keys = aliases[name] || [name];
+  for (const k of keys) {
+    const v = p.get(k);
+    if (v !== null) return decodeURIComponent(v.trim());
+  }
+  return '';
 }
 
-function fillList(ulId, csvString) {
+// ─── Raw data ──────────────────────────────────────────────────────────────
+const RAW = {
+  nom:    getParam('nom'),
+  age:    getParam('age'),
+  ecole:  getParam('ecole'),
+  classe: getParam('classe'),
+  car:    getParam('car'),
+  int:    getParam('int'),
+  comp:   getParam('comp'),
+  val:    getParam('val'),
+  riasec: getParam('riasec'),
+  intel:  getParam('intel'),
+  choix:  getParam('choix')
+};
+
+// Demo data when no URL params
+if (!window.location.search) {
+  RAW.nom    = 'Eliane Khoury';
+  RAW.age    = '15';
+  RAW.ecole  = 'SFR';
+  RAW.classe = 'EB9';
+  RAW.car    = 'Ambitieux(se), Organisé(e), Sociable';
+  RAW.int    = 'Sciences et recherche, Arts et création, Nature et environnement';
+  RAW.comp   = 'Théâtre, Résolution de problèmes, Créativité';
+  RAW.val    = 'Respect, Créativité, Liberté du temps';
+  RAW.riasec = '🥇 Artistique  🥈 Réaliste  🥉 Investigateur';
+  RAW.intel  = '🥇 Linguistique  🥈 Musicale  🥉 Spatiale';
+  RAW.choix  = 'Oui | Metier : médecine | Matieres : bio, chimie | Connait quelquun: Oui | Peut aider: Oui';
+}
+
+// ─── Translation helpers ───────────────────────────────────────────────────
+function trans(term, lang) {
+  const t = term.trim();
+  if (lang === 'ar') return CHOICE_AR[t] || t;
+  if (lang === 'en') return CHOICE_EN[t] || t;
+  return t;
+}
+
+function transCSV(csv, lang) {
+  return csv.split(',').map(s => s.trim()).filter(Boolean).map(v => trans(v, lang));
+}
+
+function parseMedals(raw) {
+  if (!raw) return [];
+  return raw.replace(/🥇|🥈|🥉/g, '|').split('|').map(s => s.trim()).filter(Boolean);
+}
+
+function parseChoix(raw, lang) {
+  if (!raw) return '—';
+  const u = UI[lang];
+  const segments = raw.split('|').map(s => s.trim()).filter(Boolean);
+  const lines = [];
+  segments.forEach(seg => {
+    const low = seg.toLowerCase();
+    if (low === 'oui' || low === 'non' || low === 'yes' || low === 'no') {
+      lines.push(`<div><strong>${u.proHas} :</strong> ${trans(seg, lang)}</div>`);
+    } else if (/^m[eé]tier/i.test(low)) {
+      lines.push(`<div><strong>${u.proJob} :</strong> ${seg.replace(/^m[eé]tier\s*[:=]\s*/i,'')}</div>`);
+    } else if (/^mati[eè]res/i.test(low)) {
+      lines.push(`<div><strong>${u.proSubjects} :</strong> ${seg.replace(/^mati[eè]res\s*[:=]\s*/i,'')}</div>`);
+    } else if (/^connait/i.test(low) || /^knows/i.test(low)) {
+      const val = seg.replace(/^[^:=]+[:=]\s*/,'');
+      lines.push(`<div><strong>${u.proKnows} :</strong> ${trans(val, lang)}</div>`);
+    } else if (/^peut aider/i.test(low) || /^can help/i.test(low)) {
+      const val = seg.replace(/^[^:=]+[:=]\s*/,'');
+      lines.push(`<div><strong>${u.proHelp} :</strong> ${trans(val, lang)}</div>`);
+    } else {
+      lines.push(`<div>${seg}</div>`);
+    }
+  });
+  return lines.join('') || '—';
+}
+
+// ─── Render ────────────────────────────────────────────────────────────────
+function fillList(ulId, items) {
   const ul = document.getElementById(ulId);
-  const items = csvString.split(',').map(s => s.trim()).filter(s => s.length > 0);
   ul.innerHTML = items.length
     ? items.map(item => `<li>${item}</li>`).join('')
     : '<li style="color:#999">—</li>';
 }
 
-function fillTop3(prefix, raw) {
-  if (!raw) { document.getElementById(prefix+'-1').textContent = '—'; return; }
-  const m1 = raw.match(/🥇\s*([^🥈🥉]+)/);
-  const m2 = raw.match(/🥈\s*([^🥈🥉]+)/);
-  const m3 = raw.match(/🥉\s*(.+)/);
-  document.getElementById(prefix+'-1').textContent = m1 ? '🥇 ' + m1[1].trim() : '';
-  document.getElementById(prefix+'-2').textContent = m2 ? '🥈 ' + m2[1].trim() : '';
-  document.getElementById(prefix+'-3').textContent = m3 ? '🥉 ' + m3[1].trim() : '';
+const MEDALS = ['🥇','🥈','🥉'];
+
+function setLang(lang) {
+  ['ar','fr','en'].forEach(l =>
+    document.getElementById('btn-'+l).classList.toggle('active', l===lang)
+  );
+  const u = UI[lang];
+  document.documentElement.lang = u.htmlLang;
+  document.getElementById('page').dir = u.dir;
+
+  // UI labels
+  document.getElementById('main-title').textContent   = u.mainTitle;
+  document.getElementById('t-info').textContent       = u.tInfo;
+  document.getElementById('t-nom-label').textContent  = u.tNom;
+  document.getElementById('t-age-label').textContent  = u.tAge;
+  document.getElementById('t-ans').textContent        = u.tAns;
+  document.getElementById('t-ecole-label').textContent= u.tEcole;
+  document.getElementById('t-classe-label').textContent= u.tClasse;
+  document.getElementById('t-portfolio').textContent  = u.tPortfolio;
+  document.getElementById('t-car-label').textContent  = u.tCar;
+  document.getElementById('t-int-label').textContent  = u.tInt;
+  document.getElementById('t-comp-label').textContent = u.tComp;
+  document.getElementById('t-val-label').textContent  = u.tVal;
+  document.getElementById('t-riasec-title').textContent= u.tRiasec;
+  document.getElementById('t-intel-title').textContent = u.tIntel;
+  document.getElementById('t-pro-title').textContent  = u.tPro;
+  document.querySelectorAll('.print-label,[id=btn-print-label]').forEach(el => el.textContent = u.tPrint);
+
+  // Data — translated
+  fillList('list-car',  transCSV(RAW.car,  lang));
+  fillList('list-int',  transCSV(RAW.int,  lang));
+  fillList('list-comp', transCSV(RAW.comp, lang));
+  fillList('list-val',  transCSV(RAW.val,  lang));
+
+  const riasecItems = parseMedals(RAW.riasec);
+  const intelItems  = parseMedals(RAW.intel);
+  [1,2,3].forEach(i => {
+    const rv = riasecItems[i-1];
+    document.getElementById('riasec-'+i).textContent = rv ? MEDALS[i-1]+' '+trans(rv, lang) : '';
+    const iv = intelItems[i-1];
+    document.getElementById('intel-'+i).textContent  = iv ? MEDALS[i-1]+' '+trans(iv, lang) : '';
+  });
+
+  document.getElementById('choix-pro').innerHTML = parseChoix(RAW.choix, lang);
+
+  // Save
+  try { localStorage.setItem('fiche-lang', lang); } catch(e){}
 }
 
-function fillChoix(raw) {
-  const el = document.getElementById('choix-pro');
-  if (!raw) { el.textContent = '—'; return; }
-  el.innerHTML = raw.split('|').map(s => s.trim()).filter(Boolean)
-    .map(p => `<div>${p}</div>`).join('');
-}
+// ─── Init ──────────────────────────────────────────────────────────────────
+document.getElementById('nom').textContent    = RAW.nom    || '—';
+document.getElementById('age').textContent    = RAW.age    || '—';
+document.getElementById('ecole').textContent  = RAW.ecole  || '—';
+document.getElementById('classe').textContent = RAW.classe || '—';
 
-document.getElementById('nom').textContent    = getParam('nom')    || '—';
-document.getElementById('age').textContent    = getParam('age')    || '—';
-document.getElementById('ecole').textContent  = getParam('ecole')  || '—';
-document.getElementById('classe').textContent = getParam('classe') || '—';
-
-fillList('list-car',  getParam('car'));
-fillList('list-int',  getParam('int'));
-fillList('list-comp', getParam('comp'));
-fillList('list-val',  getParam('val'));
-fillTop3('riasec', getParam('riasec'));
-fillTop3('intel',  getParam('intel'));
-fillChoix(getParam('choix'));
-
-// Données de démonstration si pas de paramètres
-if (!window.location.search) {
-  document.getElementById('nom').textContent    = 'Eliane Khoury';
-  document.getElementById('age').textContent    = '15';
-  document.getElementById('ecole').textContent  = 'SFR';
-  document.getElementById('classe').textContent = 'EB9';
-  fillList('list-car',  'Ambitieux(se), Organisé(e), Sociable');
-  fillList('list-int',  'Sciences et recherche, Arts et création, Nature et environnement');
-  fillList('list-comp', 'Théâtre, Résolution de problèmes, Créativité');
-  fillList('list-val',  'Respect, Créativité, Liberté du temps');
-  fillTop3('riasec', '🥇 Artistique  🥈 Réaliste  🥉 Investigateur');
-  fillTop3('intel',  '🥇 Linguistique  🥈 Musicale  🥉 Spatiale');
-  fillChoix('Oui | Metier : médecine | Matieres : bio, chimie | Connait quelquun: Oui | Peut aider: Oui');
-}
+const urlLang  = new URLSearchParams(window.location.search).get('lang');
+const savedLang = (() => { try { return localStorage.getItem('fiche-lang'); } catch(e){ return null; } })();
+const initLang  = ['ar','fr','en'].includes(urlLang) ? urlLang
+                : ['ar','fr','en'].includes(savedLang) ? savedLang
+                : 'fr';
+setLang(initLang);
 </script>
 </body>
 </html>
